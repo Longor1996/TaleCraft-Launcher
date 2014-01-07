@@ -5,10 +5,11 @@ import java.io.File;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+import de.taleCraft.launcher.jobs.STJ_Initialize;
 import de.taleCraft.launcher.platform.Platform;
 
 public class TaleCraftLauncher {
-	
+	public static TaleCraftLauncher launcher;
 	public static void main(String[] args)
 	{
 		
@@ -16,7 +17,7 @@ public class TaleCraftLauncher {
 		
 		try{UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}catch(Exception e){}
 		
-		TaleCraftLauncher launcher = new TaleCraftLauncher();
+		launcher = new TaleCraftLauncher();
 		
 		if(!launcher.run())
 			System.exit(0);
@@ -57,6 +58,9 @@ public class TaleCraftLauncher {
 			return false;
 		
 		this.frame.window.setVisible(true);
+		
+		new Thread(new STJ_Initialize()).start();
+		
 		return true;
 	}
 	
