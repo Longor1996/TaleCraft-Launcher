@@ -106,6 +106,18 @@ public abstract class Platform {
 			return false;
 		}
 	}
+	
+	public static final void sleep(long time)
+	{
+		try
+		{
+			Thread.sleep(time);
+		}
+		catch (InterruptedException e)
+		{
+			// Do nothing.
+		}
+	}
 
 	/**
 	 * This is the name of the native library folder containing the native libraries for this given Platform-Handler (/Operating-System).
