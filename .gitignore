@@ -12,6 +12,7 @@ tmp/
 *.bak
 *.swp
 *~.nib
+DOIGNORE*.java
 local.properties
 .classpath
 .settings/
