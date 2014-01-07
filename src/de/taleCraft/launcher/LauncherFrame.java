@@ -17,14 +17,16 @@ public class LauncherFrame {
 		this.windowLayout = new SpringLayout();
 		
 		// ---- Window Config
+		
 		// Size
 		final int initialWidth = 768;
 		final int initialHeight = 560;
 		this.window.setLayout(this.windowLayout);
 		this.window.setPreferredSize(new Dimension(initialWidth,initialHeight));
 		this.window.setSize(new Dimension(initialWidth,initialHeight));
-		this.window.setMinimumSize(new Dimension(128,96));
+		this.window.setMinimumSize(new Dimension(256,96+64));
 		this.window.setResizable(true);
+		
 		// Miscellaneous
 		this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.window.setAutoRequestFocus(true);
