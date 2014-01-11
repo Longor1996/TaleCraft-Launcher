@@ -7,11 +7,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 
@@ -60,6 +63,7 @@ public class LauncherFrame {
 		this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.window.setAutoRequestFocus(true);
 		this.window.setLocationRelativeTo(null);
+		this.window.setIconImage(new BufferedImage(1,1,BufferedImage.TYPE_INT_ARGB));
 		
 		// ---- End!
 		
@@ -128,6 +132,60 @@ public class LauncherFrame {
 		this.window.add(button);
 		
 		this.revalidateAndRedraw();
+	}
+	
+	public void redraw() {
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override public void run()
+			{
+				LauncherFrame.this.window.repaint();
+			}
+		});
+	}
+
+	public void showErrorReport(String title, String fullErrorMessage, String okayButtonText, ActionListener okayButtonAction) {
+		this.clearRootpane();
+		
+		JLabel l = new JLabel(title);
+		l.setOpaque(false);
+		l.setBackground(AppConstants.NULL);
+		l.setFont(l.getFont().deriveFont(16F));
+		
+		this.windowLayout.putConstraint(SpringLayout.HORIZONTAL_CENTER, l, 0, SpringLayout.HORIZONTAL_CENTER, this.window.getContentPane());
+		this.windowLayout.putConstraint(SpringLayout.NORTH, l, 0, SpringLayout.NORTH, this.window.getContentPane());
+		this.window.add(l);
+		
+		JTextArea area = new JTextArea();
+		area.setOpaque(false);
+		area.setText(fullErrorMessage);
+		area.setEditable(false);
+		
+		JScrollPane pane = new JScrollPane();
+		pane.setViewportView(area);
+		pane.setOpaque(false);
+		
+		this.windowLayout.putConstraint(SpringLayout.NORTH, pane, 8, SpringLayout.SOUTH, l);
+		this.windowLayout.putConstraint(SpringLayout.EAST, pane, -8, SpringLayout.EAST, this.window.getContentPane());
+		this.windowLayout.putConstraint(SpringLayout.SOUTH, pane, -32, SpringLayout.SOUTH, this.window.getContentPane());
+		this.windowLayout.putConstraint(SpringLayout.WEST, pane, 8, SpringLayout.WEST, this.window.getContentPane());
+		this.window.add(pane);
+		
+		if(okayButtonAction != null)
+		{
+			JButton okayButton = new TransparentJButton(okayButtonText);
+			okayButton.addActionListener(okayButtonAction);
+			
+			this.windowLayout.putConstraint(SpringLayout.NORTH, okayButton, 0, SpringLayout.SOUTH, pane);
+			this.windowLayout.putConstraint(SpringLayout.SOUTH, okayButton, 0, SpringLayout.SOUTH, this.window.getContentPane());
+			this.windowLayout.putConstraint(SpringLayout.HORIZONTAL_CENTER, okayButton, 0, SpringLayout.HORIZONTAL_CENTER, this.window.getContentPane());
+			this.window.add(okayButton);
+			
+			;;
+		}
+		
+		this.revalidateAndRedraw();
+		
+		
 	}
 	
 }
