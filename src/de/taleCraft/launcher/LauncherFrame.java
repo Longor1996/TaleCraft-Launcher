@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.SpringLayout;
+import javax.swing.SwingUtilities;
 
 public class LauncherFrame {
 	public static final LauncherFrame INSTANCE = new LauncherFrame();
@@ -34,6 +35,25 @@ public class LauncherFrame {
 		
 		// ---- End!
 		
+	}
+	
+	public void clearRootpane()
+	{
+		this.window.getContentPane().removeAll();
+		//this.window.setLayout(new SpringLayout());
+		this.revalidateAndRedraw();
+	}
+	
+	public void revalidateAndRedraw() {
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override public void run()
+			{
+				LauncherFrame.this.window.revalidate();
+				LauncherFrame.this.window.repaint();
+				AppUtil.sleep(100);
+				LauncherFrame.this.window.repaint();
+			}
+		});
 	}
 	
 }
