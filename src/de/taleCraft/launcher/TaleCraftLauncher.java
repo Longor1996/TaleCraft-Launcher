@@ -24,10 +24,10 @@ public class TaleCraftLauncher {
 		
 	}
 	
-	final LauncherFrame frame;
-	final Platform platform;
-	final File workingDirectory;
-	final boolean constructSuccess;
+	public final LauncherFrame frame;
+	public final Platform platform;
+	public final File workingDirectory;
+	public final boolean constructSuccess;
 	
 	private TaleCraftLauncher()
 	{
