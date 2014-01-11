@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public class AppConstants {
 	// Application (APP)
-	
+	public static final String APP_TITLE = "TaleCraft-Launcher";
 	
 	// Network (NET) && InputOutput (IO/NIO)
 	// NET is Internet.
