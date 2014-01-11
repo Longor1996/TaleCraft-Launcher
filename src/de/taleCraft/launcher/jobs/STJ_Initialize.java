@@ -1,5 +1,7 @@
 package de.taleCraft.launcher.jobs;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,7 +9,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SpringLayout;
 
 import org.apache.commons.io.FileUtils;
@@ -16,6 +20,7 @@ import de.taleCraft.launcher.AppConstants;
 import de.taleCraft.launcher.AppUtil;
 import de.taleCraft.launcher.LauncherFrame;
 import de.taleCraft.launcher.TaleCraftLauncher;
+import de.taleCraft.launcher.TransparentJButton;
 
 public class STJ_Initialize extends Job<EnumUpdateCheckResult> {
 	
@@ -29,22 +34,19 @@ public class STJ_Initialize extends Job<EnumUpdateCheckResult> {
 		
 		LauncherFrame frame = LauncherFrame.INSTANCE;
 		
-		JLabel l = new JLabel("Trying to download version-info from server ...");
-		l.setOpaque(false);
-		l.setBackground(AppConstants.NULL);
-		l.setFont(l.getFont().deriveFont(16F));
+		{
+			frame.clearRootpane();
+			JLabel l = new JLabel("Trying to download version-info from server ...");
+			l.setOpaque(false);
+			l.setBackground(AppConstants.NULL);
+			l.setFont(l.getFont().deriveFont(16F));
+			
+			frame.windowLayout.putConstraint(SpringLayout.HORIZONTAL_CENTER, l, 0, SpringLayout.HORIZONTAL_CENTER, frame.window.getContentPane());
+			frame.windowLayout.putConstraint(SpringLayout.VERTICAL_CENTER, l, 0, SpringLayout.VERTICAL_CENTER, frame.window.getContentPane());
+			frame.window.add(l);
+			frame.revalidateAndRedraw();
+		}
 		
-		frame.windowLayout.putConstraint(SpringLayout.HORIZONTAL_CENTER, l, 0, SpringLayout.HORIZONTAL_CENTER, frame.window.getContentPane());
-		frame.windowLayout.putConstraint(SpringLayout.VERTICAL_CENTER, l, 0, SpringLayout.VERTICAL_CENTER, frame.window.getContentPane());
-		frame.window.add(l);
-		
-		frame.window.repaint();
-		
-		AppUtil.sleep(500L);
-		
-		frame.window.repaint();
-		
-		boolean indexFileDownloadSuccess = false;
 		File dowloadIndexLocalFile = new File(TaleCraftLauncher.launcher.workingDirectory, AppConstants.IO_DownloadIndexFileName);
 		File localVersionFile = new File(TaleCraftLauncher.launcher.workingDirectory, AppConstants.IO_VersionFileName);
 		FileUtils.deleteQuietly(dowloadIndexLocalFile);
@@ -59,14 +61,11 @@ public class STJ_Initialize extends Job<EnumUpdateCheckResult> {
 				InputStream inputStream = connection.getInputStream();
 				FileUtils.copyInputStreamToFile(inputStream, dowloadIndexLocalFile);
 				inputStream.close();
-				indexFileDownloadSuccess = true;
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			indexFileDownloadSuccess = false;
 		} catch (IOException e) {
 			e.printStackTrace();
-			indexFileDownloadSuccess = false;
 		}
 		
 		// Load the current Version Information!
@@ -86,12 +85,110 @@ public class STJ_Initialize extends Job<EnumUpdateCheckResult> {
 		// Here comes the true nightmare!
 		// Do stuff depending on the EnumUpdateCheckResult!
 		
-		System.out.println("result: " + result);
+		System.out.println("[Initialize] Updatecheck-Result: " + result);
+		
+		// Rebuild GUI
+		{
+			frame.clearRootpane();
+			
+			switch(result)
+			{
+				case DOWNLOAD_IS_NEWER: this.showUpdatePrompt(false); break;
+				case NO_LOCAL_ONLINE_AVAIBLE: this.showUpdatePrompt(true); break;
+				case CURRENT_IS_NEWER: this.showPlayScreen(); break;
+				case LOCAL_AVAIBLE_ONLINE_NOT: this.showPlayScreen(); break;
+				case SAME_VERSION: this.showPlayScreen(); break;
+				case NO_VERSION_AVAIBLE_LOCAL_NOR_ONLINE: frame.showFatalErrorScreen("TaleCraft is not installed. Failed to contact server.", false); break;
+				default:
+					break;
+			}
+			
+			frame.revalidateAndRedraw();
+		}
 		
 		this.setResult(result);
 		return null;
 	}
 	
+	private void showPlayScreen() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void showUpdatePrompt(boolean forceUpdate) {
+		final LauncherFrame frame = LauncherFrame.INSTANCE;
+		
+		JLabel l = new JLabel(forceUpdate ? "TaleCraft is not yet installed. Install?" : "An update is avaible, download and install?");
+		l.setOpaque(false);
+		l.setBackground(AppConstants.NULL);
+		l.setFont(l.getFont().deriveFont(16F));
+		
+		frame.windowLayout.putConstraint(SpringLayout.HORIZONTAL_CENTER, l, 0, SpringLayout.HORIZONTAL_CENTER, frame.window.getContentPane());
+		frame.windowLayout.putConstraint(SpringLayout.VERTICAL_CENTER, l, -32, SpringLayout.VERTICAL_CENTER, frame.window.getContentPane());
+		frame.window.add(l);
+		
+		JButton button_updateInstall = new TransparentJButton(forceUpdate ? "Install" : "Update");
+		JButton button_cancelUpdate = new TransparentJButton(forceUpdate ? "Close Launcher" : "Don't Update");
+		
+		if(forceUpdate)
+		{
+			button_updateInstall.addActionListener(new ActionListener()
+			{
+				@Override public void actionPerformed(ActionEvent e)
+				{
+					System.out.println("FORCE_UPDATE");
+					new Thread(new STJ_UpdateTalecraft(STJ_Initialize.this)).start();
+				}
+			});
+			button_cancelUpdate.addActionListener(new ActionListener()
+			{
+				@Override public void actionPerformed(ActionEvent e)
+				{
+					if(JOptionPane.showConfirmDialog(
+							frame.window,
+							"Are you sure you wan't to close the Launcher?",
+							"?",
+							JOptionPane.YES_NO_OPTION)
+							== JOptionPane.YES_OPTION
+					){
+						// Close Launcher! (Using some hard crashing stuff!)
+						TaleCraftLauncher.launcher.frame.window.setVisible(false);
+						System.exit(0);
+						Runtime.getRuntime().halt(0);
+					}
+				}
+			});
+		}
+		else
+		{
+			button_updateInstall.addActionListener(new ActionListener()
+			{
+				@Override public void actionPerformed(ActionEvent e)
+				{
+					System.out.println("UNFORCED_UPDATE");
+				}
+			});
+			button_cancelUpdate.addActionListener(new ActionListener()
+			{
+				@Override public void actionPerformed(ActionEvent e)
+				{
+					System.out.println("GOTO_MAINSCREEN");
+				}
+			});
+		}
+		
+		frame.windowLayout.putConstraint(SpringLayout.VERTICAL_CENTER, button_updateInstall, 32, SpringLayout.VERTICAL_CENTER, frame.window.getContentPane());
+		frame.windowLayout.putConstraint(SpringLayout.VERTICAL_CENTER, button_cancelUpdate, 32, SpringLayout.VERTICAL_CENTER, frame.window.getContentPane());
+		
+		frame.windowLayout.putConstraint(SpringLayout.EAST, button_updateInstall, -8, SpringLayout.HORIZONTAL_CENTER, frame.window.getContentPane());
+		frame.windowLayout.putConstraint(SpringLayout.WEST, button_cancelUpdate, +8, SpringLayout.HORIZONTAL_CENTER, frame.window.getContentPane());
+		
+		frame.window.add(button_updateInstall);
+		frame.window.add(button_cancelUpdate);
+		
+		
+	}
+
 	public EnumUpdateCheckResult compareVersion(String current, String downloadIndexVersion)
 	{
 		if((current == null) && (downloadIndexVersion != null))
