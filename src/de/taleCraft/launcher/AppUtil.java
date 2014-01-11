@@ -1,6 +1,7 @@
 
 package de.taleCraft.launcher;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
@@ -44,7 +45,8 @@ public class AppUtil {
 	
 	public static final Object getFieldContent(Class<?> objectClass, Object object, String fieldName)
 	{
-		System.out.println("Reflection Access: " + object.getClass() + " @--> " + fieldName);
+		System.out.println("Reflection Access: " + objectClass + " @--> " + fieldName);
+		
 		try {
 			Field field = objectClass.getDeclaredField(fieldName);
 			
@@ -68,6 +70,14 @@ public class AppUtil {
 		}
 	}
 	
+	public static final File getJVMExecutableFile(boolean w)
+	{
+		String javaHome = System.getProperty("java.home");
+        File f = new File(javaHome);
+        f = new File(f, "bin");
+        f = new File(f, w ? "javaw.exe" : "java.exe");
+        return f;
+	}
 	
 	
 }
