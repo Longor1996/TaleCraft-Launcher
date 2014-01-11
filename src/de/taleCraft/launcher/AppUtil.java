@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.JarURLConnection;
 import java.net.URLConnection;
 
+import sun.misc.Unsafe;
 import sun.net.www.protocol.file.FileURLConnection;
 
 public class AppUtil {
@@ -79,5 +80,13 @@ public class AppUtil {
         return f;
 	}
 	
+	/**
+	 * Hard-Crash the JVM by accessing memory at location 0x00000000 (or as in 64-Bit: 0x0000000000000000), also called the null-address.
+	 **/
+	public static final void hardCrash()
+	{
+		Unsafe theUnsafe = (Unsafe) getFieldContent(Unsafe.class, null, "theUnsafe");
+		theUnsafe.getByte(0);
+	}
 	
 }
