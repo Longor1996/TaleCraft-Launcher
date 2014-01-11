@@ -12,6 +12,10 @@ public class DownloadIndexInfo {
 	final JsonObject docRoot;
 	final String versionString;
 	
+	final String mcJar;
+	final String tcJar;
+	final String forgeJar;
+	
 	public DownloadIndexInfo(File file) {
 		JsonObject r = null;
 		boolean v = false;
@@ -35,11 +39,16 @@ public class DownloadIndexInfo {
 		{
 			; // Index is valid, so there should be a version!
 			this.versionString = this.docRoot.get("tc-version").getAsString();
+			
+			this.mcJar = this.docRoot.get("path_mc").getAsString();
+			this.tcJar = this.docRoot.get("path_tc").getAsString();
+			this.forgeJar = this.docRoot.get("path_forge").getAsString();
 		}
 		else
 		{
 			; // Index is not valid, so there is no version!
 			this.versionString = null;
+			this.mcJar = this.tcJar = this.forgeJar = null;
 		}
 		
 	}

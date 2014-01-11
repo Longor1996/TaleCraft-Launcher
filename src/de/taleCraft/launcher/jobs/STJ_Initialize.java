@@ -93,8 +93,8 @@ public class STJ_Initialize extends Job<EnumUpdateCheckResult> {
 			
 			switch(result)
 			{
-				case DOWNLOAD_IS_NEWER: this.showUpdatePrompt(false); break;
-				case NO_LOCAL_ONLINE_AVAIBLE: this.showUpdatePrompt(true); break;
+				case DOWNLOAD_IS_NEWER: this.showUpdatePrompt(false, downloadIndexInfo); break;
+				case NO_LOCAL_ONLINE_AVAIBLE: this.showUpdatePrompt(true, downloadIndexInfo); break;
 				case CURRENT_IS_NEWER: this.showPlayScreen(); break;
 				case LOCAL_AVAIBLE_ONLINE_NOT: this.showPlayScreen(); break;
 				case SAME_VERSION: this.showPlayScreen(); break;
@@ -111,11 +111,10 @@ public class STJ_Initialize extends Job<EnumUpdateCheckResult> {
 	}
 	
 	private void showPlayScreen() {
-		// TODO Auto-generated method stub
-		
+		// TODO: Implement 'Main-Menu'-Screen.
 	}
 
-	private void showUpdatePrompt(boolean forceUpdate) {
+	private void showUpdatePrompt(boolean forceUpdate, final DownloadIndexInfo downloadIndexInfo) {
 		final LauncherFrame frame = LauncherFrame.INSTANCE;
 		
 		JLabel l = new JLabel(forceUpdate ? "TaleCraft is not yet installed. Install?" : "An update is avaible, download and install?");
@@ -137,7 +136,7 @@ public class STJ_Initialize extends Job<EnumUpdateCheckResult> {
 				@Override public void actionPerformed(ActionEvent e)
 				{
 					System.out.println("FORCE_UPDATE");
-					new Thread(new STJ_UpdateTalecraft(STJ_Initialize.this)).start();
+					new Thread(new STJ_UpdateTalecraft(STJ_Initialize.this, downloadIndexInfo, true)).start();
 				}
 			});
 			button_cancelUpdate.addActionListener(new ActionListener()
