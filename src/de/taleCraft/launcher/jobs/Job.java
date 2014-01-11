@@ -5,6 +5,7 @@ public abstract class Job<T> implements Runnable {
 	private boolean finished;
 	private boolean success;
 	private T returnObject;
+	private Object failureObject;
 	
 	public Job(String name)
 	{
@@ -15,6 +16,7 @@ public abstract class Job<T> implements Runnable {
 	@Override
 	public final void run() {
 		// Reset, Job Object Data
+		this.failureObject = null;
 		this.returnObject = null;
 		this.finished = false;
 		this.success = false;
@@ -32,6 +34,8 @@ public abstract class Job<T> implements Runnable {
 		{
 			jobFailureReturnObject = e;
 		}
+		
+		this.failureObject = jobFailureReturnObject;
 		
 		if(jobFailureReturnObject == null)
 		{
@@ -68,7 +72,7 @@ public abstract class Job<T> implements Runnable {
 		return;
 	}
 	
-	public abstract Object execute();
+	public abstract Object execute() throws Throwable;
 	
 	public boolean isFinished()
 	{
@@ -91,6 +95,11 @@ public abstract class Job<T> implements Runnable {
 	public T getResult()
 	{
 		return this.returnObject;
+	}
+	
+	public Object getFailureObject()
+	{
+		return this.failureObject;
 	}
 	
 }
