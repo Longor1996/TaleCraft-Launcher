@@ -7,10 +7,12 @@ but with the Mods 'Forge' and 'TaleCraft' bootstrapped to it,
 and thus solving many problems that occur with the official Minecraft-Launcher.
 
 
-This Application uses the following libraries:
+This Application requires the following libraries:
 - Mojang, authlib, 1.3
 - Apache, commans lang, 3
 - Apache, commons io, 2.4
+- Apache, log4j-api, 2.0 beta9
+- Apache, log4j-core, 2.0 beta9
 - Google, gson, 2.2.2
 - Google, guava, 15.0
 
