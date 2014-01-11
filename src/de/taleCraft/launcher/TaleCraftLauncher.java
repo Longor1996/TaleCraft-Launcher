@@ -1,15 +1,25 @@
 package de.taleCraft.launcher;
 
 import java.io.File;
+import java.net.Proxy;
+import java.util.UUID;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+
+import com.mojang.authlib.Agent;
+import com.mojang.authlib.UserAuthentication;
+import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 
 import de.taleCraft.launcher.jobs.STJ_Initialize;
 import de.taleCraft.launcher.platform.Platform;
 
 public class TaleCraftLauncher {
 	public static TaleCraftLauncher launcher;
+	public static UserAuthentication auth =
+			new YggdrasilUserAuthentication(new YggdrasilAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString()), Agent.MINECRAFT);
+	
 	public static void main(String[] args)
 	{
 		
