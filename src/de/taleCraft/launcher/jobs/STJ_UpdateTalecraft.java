@@ -161,6 +161,18 @@ public class STJ_UpdateTalecraft extends Job<Object> {
 		DownloadJob dj_tc = JOBS[1] = new DownloadJob("tc", this.downloadIndexInfo.tcJar, new File(downloadFolder, "install.tc.jar"));
 		DownloadJob dj_forge = JOBS[2] = new DownloadJob("forge", this.downloadIndexInfo.forgeJar, new File(downloadFolder, "install.forge.jar"));
 		
+		// TODO: VERY IMPORTANT STUFF!
+		// Wie soll ich denn die 22 Bibliotheken runterladen, UND sie danach auch noch an Minecraft binden?
+		// Noch dazu muss ich dann auch noch ALLE Bibliotheken die Forge braucht runterladen und binden!
+		// Nicht zu vergessen die nativen Bibliotheken, die muss ich auch noch runterladen und in den richtigen Ordner packen.
+		// Wo gehören die überhaupt hin beim start von Minecraft?
+		// Unter Umständen sind sie temporär, und werden nur zum start vom Launcher ausgepackt/ersetzt.
+		//
+		// ...
+		///
+		//// Welp
+		// FUCK
+		
 		int jobCounter = 0;
 		
 		for(int i = 0; i < JOBS.length; i++)
@@ -295,7 +307,7 @@ public class STJ_UpdateTalecraft extends Job<Object> {
 		////////////////////////////////////////////////////////////////////////////////////////
 		
 		// Time for the next step!
-		progressBar.setString("Unpacking Files...");
+		progressBar.setString("Installing Files...");
 		progressBar.setValue(0);
 		AppUtil.sleep(100);
 		
