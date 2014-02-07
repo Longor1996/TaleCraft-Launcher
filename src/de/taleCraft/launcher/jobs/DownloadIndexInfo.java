@@ -71,7 +71,7 @@ public class DownloadIndexInfo {
 				JsonObject libraryInfo = arrayElement.getAsJsonObject();
 				String url = libraryInfo.get("url").getAsString();
 				
-				
+				// TODO: Add 'rules'-system to the check if we need to download this library!
 				
 				if(canAdd)
 				{
