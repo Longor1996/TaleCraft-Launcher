@@ -4,6 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -174,14 +177,14 @@ public class STJ_UpdateTalecraft extends Job<Object> {
 		// FUCK
 		//
 		// ----------------------------
-		// 
+		//
 		// Zum glück habe ich jetzt diese Seite gefunden: http://wiki.vg/Authentication
-		// 
-		// 
-		// 
-		// 
-		// 
-		// 
+		//
+		//
+		//
+		//
+		//
+		//
 		
 		int jobCounter = 0;
 		
@@ -228,7 +231,94 @@ public class STJ_UpdateTalecraft extends Job<Object> {
 					success = false;
 					break;
 				}
-		success = false;
+		
+		// Now comes a hard part: Download ALL the required libraries, but only the ones we are missing!
+		
+		ArrayList<String> libraryURLs = this.downloadIndexInfo.getLibraryList(TaleCraftLauncher.launcher.platform);
+		File libraryDirectory = new File(TaleCraftLauncher.launcher.workingDirectory, "libraries");
+		Exception anyLibraryDownloadError = null;
+		
+		if(!libraryDirectory.exists())
+			libraryDirectory.mkdir();
+		
+		for(String libraryURL : libraryURLs)
+		{
+			String libraryLocalName = libraryURL.substring(libraryURL.lastIndexOf('/')+1);
+			File libraryLocalFile = new File(libraryDirectory, libraryLocalName);
+			
+			System.out.println("[Info] Checking Library: " + libraryURL + ",  " + libraryLocalName + ",  " + libraryLocalFile.exists());
+			
+			if(!libraryLocalFile.exists())
+			{
+				System.out.println("[Info] The library '"+libraryLocalName+"' does not exist! Trying to download... ");
+				
+				progressBar.setString("Downloading Library: " + libraryLocalName);
+				progressBar.setIndeterminate(true);
+				frame.redraw();
+				
+				URL actualURL = null;
+				Throwable error = null;
+				try {
+					actualURL = new URL(libraryURL);
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+					actualURL = null;
+					error = e;
+				}
+				
+				if(actualURL == null)
+				{
+					System.out.println("[ERROR] Failed to download the library '"+libraryLocalName+"'!");
+					anyLibraryDownloadError = new Exception("The library '"+libraryLocalName+"' failed to download.", error);
+					success = false;
+					break;
+				}
+				
+				boolean downloadSuccess = true;
+				try {
+					FileUtils.copyURLToFile(actualURL, libraryLocalFile, 5000, 2000);
+				} catch (IOException e) {
+					downloadSuccess = false;
+					e.printStackTrace();
+					actualURL = null;
+					error = e;
+				}
+				
+				if(!downloadSuccess)
+				{
+					System.out.println("[ERROR] Failed to download the library '"+libraryLocalName+"'!");
+					anyLibraryDownloadError = new Exception("The library '"+libraryLocalName+"' failed to download.", error);
+					success = false;
+					break;
+				}
+				
+				// We managed to download it! :D
+				System.out.println("[Info] Successfully downloaded the library '"+libraryLocalName+"'!");
+				
+				progressBar.setIndeterminate(false);
+				frame.redraw();
+			}
+			else
+			{
+				System.out.println("[Info] The library '"+libraryLocalName+"' was already downloaded. Skipping! ");;
+			}
+			
+			
+			;;
+		}
+		
+		progressBar.setIndeterminate(false);
+		frame.redraw();
+		
+		
+		
+		
+		
+		
+		
+		// For testing: success = false;
+		
+		
 		
 		// If the downloads failed, we will display an error message!
 		if(!success)
@@ -271,6 +361,13 @@ public class STJ_UpdateTalecraft extends Job<Object> {
 					area.append("\n");
 					
 				};
+			}
+			
+			if(anyLibraryDownloadError != null)
+			{
+				
+				
+				
 			}
 			
 			ActionListener action;
@@ -317,9 +414,11 @@ public class STJ_UpdateTalecraft extends Job<Object> {
 		////////////////////////////////////////////////////////////////////////////////////////
 		
 		// Time for the next step!
+		//*
 		progressBar.setString("Installing Files...");
 		progressBar.setValue(0);
 		AppUtil.sleep(100);
+		//*/
 		
 		
 		

@@ -3,9 +3,14 @@ package de.taleCraft.launcher.jobs;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonStreamParser;
+
+import de.taleCraft.launcher.platform.Platform;
 
 public class DownloadIndexInfo {
 	final boolean isValid;
@@ -51,6 +56,33 @@ public class DownloadIndexInfo {
 			this.mcJar = this.tcJar = this.forgeJar = null;
 		}
 		
+	}
+	
+	public ArrayList<String> getLibraryList(Platform platform)
+	{
+		ArrayList<String> finalLibraryList = new ArrayList<String>();
+		
+		JsonArray libArray = this.docRoot.getAsJsonArray("libraries");
+		
+		for(JsonElement arrayElement : libArray)
+			if(arrayElement instanceof JsonObject)
+			{
+				boolean canAdd = true;
+				JsonObject libraryInfo = arrayElement.getAsJsonObject();
+				String url = libraryInfo.get("url").getAsString();
+				
+				
+				
+				if(canAdd)
+				{
+					finalLibraryList.add(url);;
+				}
+				
+				continue;
+			}
+			else throw new RuntimeException("The contents of the json-array 'libraries' are Corrupted!");
+		
+		return finalLibraryList;
 	}
 
 }

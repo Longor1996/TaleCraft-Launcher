@@ -72,7 +72,7 @@ public abstract class Job<T> implements Runnable {
 		return;
 	}
 	
-	public abstract T execute() throws Throwable;
+	public abstract Object execute() throws Throwable;
 	
 	public boolean isFinished()
 	{

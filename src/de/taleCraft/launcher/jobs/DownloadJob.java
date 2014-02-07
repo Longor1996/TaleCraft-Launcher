@@ -29,7 +29,7 @@ public class DownloadJob extends Job<File>{
 		
 		// We did it! We successfully downloaded the File!
 		
-		return this.destination;
+		return null;
 	}
 	
 	
