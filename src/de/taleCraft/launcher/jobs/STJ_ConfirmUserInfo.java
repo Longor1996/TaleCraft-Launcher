@@ -1,6 +1,8 @@
 package de.taleCraft.launcher.jobs;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +10,7 @@ import java.util.Random;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -65,11 +68,19 @@ public class STJ_ConfirmUserInfo extends Job<Object> {
 		JLabel l = new JLabel("Please Login with your Minecraft-Account");
 		l.setOpaque(false);
 		l.setBackground(AppConstants.NULL);
-		l.setFont(l.getFont().deriveFont(16F));
+		l.setFont(l.getFont().deriveFont(Font.BOLD, 16F));
+		
+		final JEditorPane hiddenMessage = new JEditorPane();
+		hiddenMessage.setOpaque(false);
+		hiddenMessage.setText("-null-");
+		hiddenMessage.setEditable(false);
+		hiddenMessage.setPreferredSize(new Dimension(256, 16 * 3));
+		hiddenMessage.setForeground(Color.RED);
+		hiddenMessage.setVisible(false);
 		
 		JTextField fieldUSERNAME = new JTextField();
 		fieldUSERNAME.setBackground(Color.LIGHT_GRAY.brighter());
-		fieldUSERNAME.setFont(fieldUSERNAME.getFont().deriveFont(12F));
+		fieldUSERNAME.setFont(fieldUSERNAME.getFont().deriveFont(Font.BOLD,12F));
 		fieldUSERNAME.setColumns(18);
 		
 		JPasswordField fieldUSERPASS = new JPasswordField();
@@ -80,12 +91,12 @@ public class STJ_ConfirmUserInfo extends Job<Object> {
 		JLabel lN = new JLabel("Username");
 		lN.setOpaque(false);
 		lN.setBackground(AppConstants.NULL);
-		lN.setFont(l.getFont().deriveFont(10F));
+		lN.setFont(l.getFont().deriveFont(12F));
 		
 		JLabel lP = new JLabel("Password");
 		lN.setOpaque(false);
 		lP.setBackground(AppConstants.NULL);
-		lP.setFont(l.getFont().deriveFont(10F));
+		lP.setFont(l.getFont().deriveFont(12F));
 		
 		@SuppressWarnings("serial")
 		JButton login = new JButton(new AbstractAction("Login")
@@ -98,6 +109,9 @@ public class STJ_ConfirmUserInfo extends Job<Object> {
 				
 				// If something goes wrong during Login, we can simply 'post-update' the spring-layout and blend in a error-message.
 				// That will look way nicer than dumb dialog!
+				hiddenMessage.setText("Unable to Login:\nFunctionality not yet implemented.\nderp");
+				hiddenMessage.revalidate();
+				hiddenMessage.setVisible(true);
 				
 			}
 		});
@@ -105,13 +119,15 @@ public class STJ_ConfirmUserInfo extends Job<Object> {
 		login.setFont(login.getFont().deriveFont(14F));
 		
 		frame.windowLayout.putConstraint(SpringLayout.HORIZONTAL_CENTER, l, 0, SpringLayout.HORIZONTAL_CENTER, frame.window.getContentPane());
-		frame.windowLayout.putConstraint(SpringLayout.VERTICAL_CENTER, l, -64, SpringLayout.VERTICAL_CENTER, frame.window.getContentPane());
+		frame.windowLayout.putConstraint(SpringLayout.VERTICAL_CENTER, l, -96, SpringLayout.VERTICAL_CENTER, frame.window.getContentPane());
 		
 		frame.windowLayout.putConstraint(SpringLayout.HORIZONTAL_CENTER, fieldUSERNAME, 0, SpringLayout.HORIZONTAL_CENTER, frame.window.getContentPane());
 		frame.windowLayout.putConstraint(SpringLayout.HORIZONTAL_CENTER, fieldUSERPASS, 0, SpringLayout.HORIZONTAL_CENTER, frame.window.getContentPane());
 		frame.windowLayout.putConstraint(SpringLayout.HORIZONTAL_CENTER, login, 0, SpringLayout.HORIZONTAL_CENTER, frame.window.getContentPane());
+		frame.windowLayout.putConstraint(SpringLayout.WEST, hiddenMessage, 8, SpringLayout.WEST, l);
 		
-		frame.windowLayout.putConstraint(SpringLayout.NORTH, fieldUSERNAME, +12, SpringLayout.SOUTH, l);
+		frame.windowLayout.putConstraint(SpringLayout.NORTH, hiddenMessage, 2, SpringLayout.SOUTH, l);
+		frame.windowLayout.putConstraint(SpringLayout.NORTH, fieldUSERNAME, +2, SpringLayout.SOUTH, hiddenMessage);
 		frame.windowLayout.putConstraint(SpringLayout.NORTH, fieldUSERPASS, +12, SpringLayout.SOUTH, fieldUSERNAME);
 		frame.windowLayout.putConstraint(SpringLayout.NORTH, login, +12, SpringLayout.SOUTH, fieldUSERPASS);
 		
@@ -122,6 +138,7 @@ public class STJ_ConfirmUserInfo extends Job<Object> {
 		frame.windowLayout.putConstraint(SpringLayout.VERTICAL_CENTER, lP, 0, SpringLayout.VERTICAL_CENTER, fieldUSERPASS);
 		
 		frame.window.add(l);
+		frame.window.add(hiddenMessage);
 		frame.window.add(fieldUSERNAME);
 		frame.window.add(fieldUSERPASS);
 		frame.window.add(login);
@@ -163,7 +180,9 @@ public class STJ_ConfirmUserInfo extends Job<Object> {
 		
 		// TODO: Implement a small code to validate the AccessToken on the official Minecraft-Server!
 		
-		// com.mojang.authlib.yggdrasil.request.XXX?
+		// ???: com.mojang.authlib.yggdrasil.request.XXX
+		// ???: new RefreshRequest(new YggdrasilUserAuthentication(new YggdrasilAuthenticationService(Proxy.NO_PROXY, accessToken), Agent.MINECRAFT));
+		
 		
 		// For now, just return true!
 		return (new Random().nextInt(12)) < accessToken.length();
