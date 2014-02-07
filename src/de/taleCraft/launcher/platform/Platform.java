@@ -41,6 +41,8 @@ public abstract class Platform {
 		if(workingDirectory.equalsIgnoreCase("<-NULL->"))
 			workingDirectory = acquireNewWorkingDirectory(tcPrefs);
 		
+		System.out.println("[Info] Working-Directory is at: " + workingDirectory);
+		
 		return workingDirectory;
 	}
 

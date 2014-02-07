@@ -30,7 +30,7 @@ public class STJ_Initialize extends Job<EnumUpdateCheckResult> {
 	}
 	
 	@Override
-	public Object execute() {
+	public EnumUpdateCheckResult execute() {
 		
 		LauncherFrame frame = LauncherFrame.INSTANCE;
 		
@@ -62,6 +62,7 @@ public class STJ_Initialize extends Job<EnumUpdateCheckResult> {
 				FileUtils.copyInputStreamToFile(inputStream, dowloadIndexLocalFile);
 				inputStream.close();
 			}
+			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -80,10 +81,8 @@ public class STJ_Initialize extends Job<EnumUpdateCheckResult> {
 		// Load the downloadIndex!
 		DownloadIndexInfo downloadIndexInfo = new DownloadIndexInfo(dowloadIndexLocalFile);
 		
+		// Do some fancy if-algebra to compare the installed-version against the server-version.
 		EnumUpdateCheckResult result = this.compareVersion(currentVersion, downloadIndexInfo.versionString);
-		
-		// Here comes the true nightmare!
-		// Do stuff depending on the EnumUpdateCheckResult!
 		
 		System.out.println("[Initialize] Updatecheck-Result: " + result);
 		
@@ -91,6 +90,7 @@ public class STJ_Initialize extends Job<EnumUpdateCheckResult> {
 		{
 			frame.clearRootpane();
 			
+			// And now, depending on what the comparison result is, build a fancy GUI to tell the user whats going on!
 			switch(result)
 			{
 				case DOWNLOAD_IS_NEWER: this.showUpdatePrompt(false, downloadIndexInfo); break;
@@ -112,6 +112,7 @@ public class STJ_Initialize extends Job<EnumUpdateCheckResult> {
 	
 	private void showPlayScreen() {
 		// TODO: Implement 'Main-Menu'-Screen.
+		
 	}
 
 	private void showUpdatePrompt(boolean forceUpdate, final DownloadIndexInfo downloadIndexInfo) {

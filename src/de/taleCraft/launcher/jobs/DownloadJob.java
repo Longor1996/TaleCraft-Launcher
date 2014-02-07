@@ -17,7 +17,7 @@ public class DownloadJob extends Job<File>{
 	}
 	
 	@Override
-	public Object execute() throws Throwable {
+	public File execute() throws Throwable {
 		this.setResult(this.destination);
 		
 		try {
@@ -29,7 +29,7 @@ public class DownloadJob extends Job<File>{
 		
 		// We did it! We successfully downloaded the File!
 		
-		return null;
+		return this.destination;
 	}
 	
 	

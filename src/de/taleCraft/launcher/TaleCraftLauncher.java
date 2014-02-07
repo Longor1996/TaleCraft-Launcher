@@ -2,6 +2,8 @@ package de.taleCraft.launcher;
 
 import java.io.File;
 import java.net.Proxy;
+import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.UUID;
 
 import javax.swing.JOptionPane;
@@ -12,6 +14,7 @@ import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 
+import de.taleCraft.launcher.jobs.STJ_ConfirmUserInfo;
 import de.taleCraft.launcher.jobs.STJ_Initialize;
 import de.taleCraft.launcher.platform.Platform;
 
@@ -29,11 +32,84 @@ public class TaleCraftLauncher {
 		
 		launcher = new TaleCraftLauncher();
 		
+		genLibList();
+		
+		
 		if(!launcher.run())
 			System.exit(0);
 		
 	}
 	
+	private static void genLibList() {
+		String strPath = launcher.workingDirectory.getAbsolutePath() + "\\serverside\\all_libs_to_download_and_add_to_classpath.txt";
+		System.out.println("> TRY-DIR == " + strPath);
+		System.out.println("");
+		System.out.println("");
+		
+		ArrayList<String> paths = new ArrayList<String>();
+		
+		try
+		{
+			Scanner sc = new Scanner(new File(strPath));
+			
+			while(sc.hasNextLine())
+			{
+				String line = sc.nextLine().trim();
+				
+				if(line.isEmpty())
+				{
+					paths.add("");
+					continue;
+				}
+				
+				if(line.startsWith("//"))
+				{
+					paths.add(line);
+					continue;
+				}
+				
+				if(line.startsWith("#"))
+					continue;
+				
+				if(line.contains("[STOP]"))
+					break;
+				
+				System.out.println("[:lib:] " + line);
+				
+				String[] pieces = line.split(":");
+				pieces[0].replace(".", "/");
+				
+				String fullPath = "https://libraries.minecraft.net/";
+				
+				fullPath += pieces[0];
+				fullPath += "/";
+				fullPath += pieces[1];
+				fullPath += "/";
+				fullPath += pieces[2];
+				fullPath += "/";
+				fullPath += pieces[1];
+				fullPath += "-";
+				fullPath += pieces[2];
+				fullPath += ".jar";
+				
+				paths.add(fullPath);
+			}
+			
+			sc.close();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		System.out.println("");
+		
+		for(String str : paths)
+			System.out.println("\t\t{url:\"" + str + "\"},");
+		
+		System.out.println("");
+	}
+
 	public final LauncherFrame frame;
 	public final Platform platform;
 	public final File workingDirectory;
@@ -69,6 +145,7 @@ public class TaleCraftLauncher {
 		
 		this.frame.window.setVisible(true);
 		
+		new Thread(new STJ_ConfirmUserInfo()).start();
 		new Thread(new STJ_Initialize()).start();
 		
 		return true;

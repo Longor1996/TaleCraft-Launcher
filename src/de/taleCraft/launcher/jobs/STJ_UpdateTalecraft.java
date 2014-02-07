@@ -172,6 +172,16 @@ public class STJ_UpdateTalecraft extends Job<Object> {
 		///
 		//// Welp
 		// FUCK
+		//
+		// ----------------------------
+		// 
+		// Zum glück habe ich jetzt diese Seite gefunden: http://wiki.vg/Authentication
+		// 
+		// 
+		// 
+		// 
+		// 
+		// 
 		
 		int jobCounter = 0;
 		
