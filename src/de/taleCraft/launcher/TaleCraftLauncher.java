@@ -32,7 +32,7 @@ public class TaleCraftLauncher {
 		
 		launcher = new TaleCraftLauncher();
 		
-		genLibList();
+		// genLibList();
 		
 		
 		if(!launcher.run())
@@ -40,7 +40,10 @@ public class TaleCraftLauncher {
 		
 	}
 	
-	private static void genLibList() {
+	/**
+	 * @deprecated UNUSED! This method is not to be used. Only for usage in TaleCraft distribution.
+	 **/
+	public static void genLibList() {
 		String strPath = launcher.workingDirectory.getAbsolutePath() + "\\serverside\\all_libs_to_download_and_add_to_classpath.txt";
 		System.out.println("> TRY-DIR == " + strPath);
 		System.out.println("");
