@@ -115,4 +115,6 @@ public abstract class Platform {
 	 **/
 	public abstract String getLWJGLLibraryName();
 	
+	public abstract String getSimpleName();
+	
 }

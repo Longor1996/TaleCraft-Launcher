@@ -7,4 +7,9 @@ public class PlatformMacOSX extends Platform {
 		return "macosx";
 	}
 
+	@Override
+	public String getSimpleName() {
+		return "osx";
+	}
+
 }

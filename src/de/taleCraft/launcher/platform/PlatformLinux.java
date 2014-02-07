@@ -7,4 +7,9 @@ public class PlatformLinux extends Platform {
 		return "linux";
 	}
 
+	@Override
+	public String getSimpleName() {
+		return "linux";
+	}
+
 }
