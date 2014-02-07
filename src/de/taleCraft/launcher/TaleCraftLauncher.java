@@ -15,7 +15,6 @@ import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 
 import de.taleCraft.launcher.jobs.STJ_ConfirmUserInfo;
-import de.taleCraft.launcher.jobs.STJ_Initialize;
 import de.taleCraft.launcher.platform.Platform;
 
 public class TaleCraftLauncher {
@@ -149,7 +148,7 @@ public class TaleCraftLauncher {
 		this.frame.window.setVisible(true);
 		
 		new Thread(new STJ_ConfirmUserInfo()).start();
-		new Thread(new STJ_Initialize()).start();
+		// XXX: Move new Thread(new STJ_Initialize()).start(); into STJ_ConfirmUserInfo!
 		
 		return true;
 	}
