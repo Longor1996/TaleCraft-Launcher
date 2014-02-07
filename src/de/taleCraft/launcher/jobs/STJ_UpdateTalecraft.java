@@ -310,15 +310,7 @@ public class STJ_UpdateTalecraft extends Job<Object> {
 		progressBar.setIndeterminate(false);
 		frame.redraw();
 		
-		
-		
-		
-		
-		
-		
 		// For testing: success = false;
-		
-		
 		
 		// If the downloads failed, we will display an error message!
 		if(!success)
@@ -335,7 +327,7 @@ public class STJ_UpdateTalecraft extends Job<Object> {
 					
 					if(!dj.isSuccess())
 					{
-						area.append("Download no." + i + ", failed because of");
+						area.append("Download no." + i + ", failed because of ");
 						
 						Object obj = dj.getFailureObject();
 						
@@ -365,9 +357,11 @@ public class STJ_UpdateTalecraft extends Job<Object> {
 			
 			if(anyLibraryDownloadError != null)
 			{
-				
-				
-				
+				area.append(" Library Download Error Occurred!");
+				area.append("\n");
+				area.append(ExceptionUtils.getStackTrace(anyLibraryDownloadError));
+				area.append("\n");
+				area.append("\n");
 			}
 			
 			ActionListener action;
@@ -414,13 +408,13 @@ public class STJ_UpdateTalecraft extends Job<Object> {
 		////////////////////////////////////////////////////////////////////////////////////////
 		
 		// Time for the next step!
-		//*
 		progressBar.setString("Installing Files...");
 		progressBar.setValue(0);
 		AppUtil.sleep(100);
-		//*/
 		
-		
+		// Now we have to pack-up the main-executable,
+		// then we have to check if everything is in place,
+		// then we can tell the user that we are done updating.
 		
 		
 		
